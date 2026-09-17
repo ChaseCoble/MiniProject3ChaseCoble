@@ -136,3 +136,22 @@ Chase Coble
   change during the `sample_by_decade` implementation, and ran ad-hoc
   comparisons across different `random_state` values to sanity-check whether
   the loudness/major-mode trend was a real signal or sampling noise.
+
+### Human Contributions
+
+* Wrote and iterated on `CLAUDE.md` itself — the pipeline spec, the TDD
+  strategy, the `logfile.txt` requirement and its exact append syntax, and
+  the correction that expected/red-step test failures should not be logged.
+* Directed the TDD workflow turn-by-turn: decided which function got tests
+  written next (decade bucketing, per-decade sampling, is-major/percent-major,
+  final aggregation, then the `main.py` ingestion and plotting functions), and
+  gated each implementation on reviewing the red step first.
+* Diagnosed the manual-run test failures firsthand and reported the exact
+  symptoms (cache permission issue, then a `ModuleNotFoundError`) that led to
+  the `pytest.ini` fix.
+* Made the analysis judgment calls: chose to exclude the 1950s/1960s/1970s
+  decades and set the per-decade sample cap to 1000 for compute savings,
+  flagged the resulting chart as "dodgy," and requested the second
+  `random_state` run used to tell real signal from sampling noise.
+* Reviewed and directed every README revision, including requiring this
+  section.
