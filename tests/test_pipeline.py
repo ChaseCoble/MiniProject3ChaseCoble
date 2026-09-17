@@ -5,7 +5,13 @@
 import pandas as pd
 import pytest
 
-from preprocess import is_major, percent_major_by_decade, sample_by_decade, year_to_decade
+from preprocess import (
+    aggregate_by_decade,
+    is_major,
+    percent_major_by_decade,
+    sample_by_decade,
+    year_to_decade,
+)
 
 
 @pytest.mark.parametrize(
@@ -118,3 +124,28 @@ def test_percent_major_by_decade_handles_multiple_decades_independently():
     assert result.loc[1990] == 1.0
     assert result.loc[1950] == 0.0
     assert result.loc[1980] == 0.5
+
+
+def test_aggregate_by_decade_computes_mean_loudness_and_percent_major():
+    df = pd.DataFrame(
+        {
+            "decade": [1980, 1980, 1990, 1990, 1990],
+            "loudness": [-10.0, -8.0, -5.0, -7.0, -6.0],
+            "mode_name": ["minor", "minor", "major", "major", "minor"],
+        }
+    )
+
+    result = aggregate_by_decade(df)
+
+    expected = pd.DataFrame(
+        {
+            "decade": [1980, 1990],
+            "mean_loudness": [-9.0, -6.0],
+            "percent_major": [0.0, 2 / 3],
+        }
+    )
+
+    pd.testing.assert_frame_equal(
+        result.sort_values("decade").reset_index(drop=True),
+        expected,
+    )

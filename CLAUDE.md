@@ -46,6 +46,16 @@ Test the transformation functions, not the plot. Specifically, write tests for:
   hand-built fixture DataFrame with known expected output
 
 - logfile.txt is a constantly appended file for test runs and modifications. Append to it when told to.
+- Pipe the output of pytest to append to logfile, as follows.
+
+<Brief summary of change>
+<Directly piped pytest>
+<Pivot summary if necessary>
+<Directly piped pytest>
+
+This syntax does NOT apply to expected-failure (red-step) test runs — do not
+append those pytest outputs to logfile.txt. Only pipe passing runs (and, for a
+pivot, the run after the fix).
 
 Do NOT write a test that asserts on the PNG's pixel content or tries to snapshot
 the chart. Instead, optionally assert the figure was created with two axes and
