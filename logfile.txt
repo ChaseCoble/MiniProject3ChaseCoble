@@ -1,0 +1,47 @@
+2026-09-17 - logfile.txt created retroactively to capture prior test-run history per CLAUDE.md.
+
+[year_to_decade]
+- Wrote tests/test_pipeline.py::test_year_to_decade_boundaries (parametrized on
+  1970, 1979, 1980, 1969, 1999, 2000). Ran red: ImportError - year_to_decade did
+  not exist in preprocess.py.
+- Implemented year_to_decade(year) = (year // 10) * 10 in preprocess.py.
+- Ran `python -m pytest tests/test_pipeline.py`: 6 passed.
+
+[pytest invocation / environment fix]
+- User reported tests failing manually with a ModuleNotFoundError, initially
+  suspected as a __pycache__/.pytest_cache permission issue (those dirs had
+  been created under a different user with no write access for the other
+  user, from earlier file operations - deleted so they'd regenerate cleanly).
+- Reproduced separately: running the bare `pytest` command (as opposed to
+  `python -m pytest`) does not add the project root to sys.path, so
+  `from preprocess import ...` failed with ModuleNotFoundError.
+- Fix: added pytest.ini with `pythonpath = .` so preprocess.py resolves
+  regardless of invocation style or cwd.
+- Ran `pytest tests/test_pipeline.py`: 6 passed.
+
+[sample_by_decade]
+- Wrote three tests for sample_by_decade: caps a >5000-row decade group at
+  exactly 5000, leaves a <5000-row group untouched, and reproducibility of
+  output given the same random_state=42 across two calls.
+- Ran red: ImportError - sample_by_decade did not exist in preprocess.py.
+
+- PIVOT: First implementation used
+      df.groupby(decade_col, group_keys=False).apply(
+          lambda group: group.sample(n=min(len(group), sample_size), random_state=random_state)
+      )
+  Ran `pytest tests/test_pipeline.py -v -W error::FutureWarning`:
+  1 failed, 8 passed.
+  Failure: test_sample_by_decade_caps_large_group_at_5000 raised
+  `KeyError: 'decade'` when the test asserted on result["decade"]. Root cause:
+  pandas 3.0 (installed: pandas==3.0.6, per requirements.txt) changed
+  GroupBy.apply to exclude the grouping column from the DataFrame passed into
+  the applied function by default, so the "decade" column was silently
+  dropped from the concatenated result - not a test bug, a pandas
+  version-behavior change.
+  Fix: replaced groupby().apply() with a manual loop over
+  df.groupby(decade_col, group_keys=False), sampling each group directly
+  and combining with pd.concat(sampled_groups, ignore_index=True). This
+  keeps the original columns (including "decade") intact because the
+  group DataFrame passed to .sample() is never stripped of the key column.
+- Re-ran `pytest tests/test_pipeline.py -v -W error::FutureWarning`:
+  9 passed, 0 warnings escalated to errors.

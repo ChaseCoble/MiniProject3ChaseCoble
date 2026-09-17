@@ -45,6 +45,8 @@ Test the transformation functions, not the plot. Specifically, write tests for:
 - the final aggregation (mean loudness, % major per decade) against a small
   hand-built fixture DataFrame with known expected output
 
+- logfile.txt is a constantly appended file for test runs and modifications. Append to it when told to.
+
 Do NOT write a test that asserts on the PNG's pixel content or tries to snapshot
 the chart. Instead, optionally assert the figure was created with two axes and
 non-empty data — that's the ceiling of what's meaningfully testable here.
@@ -68,6 +70,7 @@ miniproject3/
 ├── requirements.txt
 ├── .gitignore
 └── README.md
+logfile.txt
 
 README.md starts as a copy of a previous projects README to maintain structure. 
 
