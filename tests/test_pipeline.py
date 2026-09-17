@@ -5,6 +5,7 @@
 import pandas as pd
 import pytest
 
+from main import load_and_aggregate
 from preprocess import (
     aggregate_by_decade,
     is_major,
@@ -136,6 +137,32 @@ def test_aggregate_by_decade_computes_mean_loudness_and_percent_major():
     )
 
     result = aggregate_by_decade(df)
+
+    expected = pd.DataFrame(
+        {
+            "decade": [1980, 1990],
+            "mean_loudness": [-9.0, -6.0],
+            "percent_major": [0.0, 2 / 3],
+        }
+    )
+
+    pd.testing.assert_frame_equal(
+        result.sort_values("decade").reset_index(drop=True),
+        expected,
+    )
+
+
+def test_load_and_aggregate_reads_csv_and_aggregates_by_decade(tmp_path):
+    sample_path = tmp_path / "spotify_sample.csv"
+    pd.DataFrame(
+        {
+            "decade": [1980, 1980, 1990, 1990, 1990],
+            "loudness": [-10.0, -8.0, -5.0, -7.0, -6.0],
+            "mode_name": ["minor", "minor", "major", "major", "minor"],
+        }
+    ).to_csv(sample_path, index=False)
+
+    result = load_and_aggregate(sample_path)
 
     expected = pd.DataFrame(
         {

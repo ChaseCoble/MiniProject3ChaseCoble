@@ -17,12 +17,16 @@ Has music shifted toward louder, more major-key-dominant sound over time?
 ### Stage 1: Preprocessing (produces the committed sample file)
 1. Load `data/spotify_ds.csv`.
 2. Derive `decade = (release_year // 10) * 10`.
-3. Group by decade. Sample `min(len(group), 5000)` rows per decade — do not assume
-   every decade has ≥5000 rows; that assumption will silently break on sparse decades.
-4. Use a fixed `random_state` for reproducibility (tests will assert on this).
-5. Drop any decade bucket with fewer than ~100 rows post-sample and log a warning —
+3. Drop the 1950, 1960, and 1970 decades entirely (excluded from this analysis;
+   1950 was already being dropped downstream by the <100-row rule, so excluding
+   it upfront just saves the sampling work).
+4. Group remaining decades. Sample `min(len(group), 1000)` rows per decade — do not
+   assume every decade has ≥1000 rows; that assumption will silently break on sparse
+   decades.
+5. Use a fixed `random_state` for reproducibility (tests will assert on this).
+6. Drop any decade bucket with fewer than ~100 rows post-sample and log a warning —
    too few rows to trust a decade mean.
-6. Write result to `data/spotify_sample.csv` (this file IS committed — it's the
+7. Write result to `data/spotify_sample.csv` (this file IS committed — it's the
    truncated version for repo transport / automated grading, per the assignment's
    "no manual download step" constraint).
 
