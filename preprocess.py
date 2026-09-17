@@ -15,3 +15,12 @@ def sample_by_decade(df, decade_col="decade", sample_size=5000, random_state=42)
         for _, group in df.groupby(decade_col, group_keys=False)
     ]
     return pd.concat(sampled_groups, ignore_index=True)
+
+
+def is_major(mode_name):
+    return mode_name == "major"
+
+
+def percent_major_by_decade(df, decade_col="decade", mode_col="mode_name"):
+    is_major_flags = df[mode_col].map(is_major)
+    return is_major_flags.groupby(df[decade_col]).mean()

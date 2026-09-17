@@ -45,3 +45,18 @@
   group DataFrame passed to .sample() is never stripped of the key column.
 - Re-ran `pytest tests/test_pipeline.py -v -W error::FutureWarning`:
   9 passed, 0 warnings escalated to errors.
+
+[is_major / percent_major_by_decade]
+- Wrote tests for is_major (scalar flag on "major"/"minor") and
+  percent_major_by_decade (share of major per decade), covering the 0% and
+  100% edge cases plus a mixed decade (0.5) to confirm decades are computed
+  independently.
+- Implemented in preprocess.py:
+      def is_major(mode_name):
+          return mode_name == "major"
+
+      def percent_major_by_decade(df, decade_col="decade", mode_col="mode_name"):
+          is_major_flags = df[mode_col].map(is_major)
+          return is_major_flags.groupby(df[decade_col]).mean()
+- Ran `pytest tests/test_pipeline.py -v -W error::FutureWarning`:
+  14 passed, 0 warnings escalated to errors.
