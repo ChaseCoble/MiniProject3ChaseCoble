@@ -123,3 +123,35 @@ tests/test_pipeline.py::test_aggregate_by_decade_computes_mean_loudness_and_perc
 tests/test_pipeline.py::test_load_and_aggregate_reads_csv_and_aggregates_by_decade PASSED [100%]
 
 ============================== 16 passed in 0.26s ==============================
+
+[README update]
+- Filled in README.md: description + answer to the research question (no
+  evident loudness/major-mode trend by decade in this sample), install/run
+  steps, Data attribution section, version history, and AI Usage section.
+  Confirmed header comment present in main.py, preprocess.py, and
+  tests/test_pipeline.py. Full suite run below.
+============================= test session starts ==============================
+platform linux -- Python 3.13.5, pytest-9.1.1, pluggy-1.6.0 -- /home/dev_operator/projects/school/INF601/MiniProject3/.venv/bin/python3
+cachedir: .pytest_cache
+rootdir: /home/dev_operator/projects/school/INF601/MiniProject3
+configfile: pytest.ini
+collecting ... collected 16 items
+
+tests/test_pipeline.py::test_year_to_decade_boundaries[1970-1970] PASSED [  6%]
+tests/test_pipeline.py::test_year_to_decade_boundaries[1979-1970] PASSED [ 12%]
+tests/test_pipeline.py::test_year_to_decade_boundaries[1980-1980] PASSED [ 18%]
+tests/test_pipeline.py::test_year_to_decade_boundaries[1969-1960] PASSED [ 25%]
+tests/test_pipeline.py::test_year_to_decade_boundaries[1999-1990] PASSED [ 31%]
+tests/test_pipeline.py::test_year_to_decade_boundaries[2000-2000] PASSED [ 37%]
+tests/test_pipeline.py::test_sample_by_decade_caps_large_group_at_5000 PASSED [ 43%]
+tests/test_pipeline.py::test_sample_by_decade_keeps_all_rows_when_under_cap PASSED [ 50%]
+tests/test_pipeline.py::test_sample_by_decade_is_reproducible_given_same_random_state PASSED [ 56%]
+tests/test_pipeline.py::test_is_major_flags_major_and_minor[major-True] PASSED [ 62%]
+tests/test_pipeline.py::test_is_major_flags_major_and_minor[minor-False] PASSED [ 68%]
+tests/test_pipeline.py::test_percent_major_by_decade_all_major_is_100_percent PASSED [ 75%]
+tests/test_pipeline.py::test_percent_major_by_decade_all_minor_is_0_percent PASSED [ 81%]
+tests/test_pipeline.py::test_percent_major_by_decade_handles_multiple_decades_independently PASSED [ 87%]
+tests/test_pipeline.py::test_aggregate_by_decade_computes_mean_loudness_and_percent_major PASSED [ 93%]
+tests/test_pipeline.py::test_load_and_aggregate_reads_csv_and_aggregates_by_decade PASSED [100%]
+
+============================== 16 passed in 0.53s ==============================
