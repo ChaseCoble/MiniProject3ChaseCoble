@@ -5,7 +5,7 @@
 import pandas as pd
 import pytest
 
-from preprocess import sample_by_decade, year_to_decade
+from preprocess import is_major, percent_major_by_decade, sample_by_decade, year_to_decade
 
 
 @pytest.mark.parametrize(
@@ -65,3 +65,56 @@ def test_sample_by_decade_is_reproducible_given_same_random_state():
         first.sort_values("track_id").reset_index(drop=True),
         second.sort_values("track_id").reset_index(drop=True),
     )
+
+
+@pytest.mark.parametrize(
+    "mode_name, expected",
+    [
+        ("major", True),
+        ("minor", False),
+    ],
+)
+def test_is_major_flags_major_and_minor(mode_name, expected):
+    assert is_major(mode_name) is expected
+
+
+def _make_mode_df(decade, modes):
+    return pd.DataFrame(
+        {
+            "decade": decade,
+            "mode_name": modes,
+        }
+    )
+
+
+def test_percent_major_by_decade_all_major_is_100_percent():
+    df = _make_mode_df(1990, ["major", "major", "major"])
+
+    result = percent_major_by_decade(df)
+
+    assert result.loc[1990] == 1.0
+
+
+def test_percent_major_by_decade_all_minor_is_0_percent():
+    df = _make_mode_df(1950, ["minor", "minor"])
+
+    result = percent_major_by_decade(df)
+
+    assert result.loc[1950] == 0.0
+
+
+def test_percent_major_by_decade_handles_multiple_decades_independently():
+    df = pd.concat(
+        [
+            _make_mode_df(1990, ["major", "major", "major"]),
+            _make_mode_df(1950, ["minor", "minor"]),
+            _make_mode_df(1980, ["major", "minor"]),
+        ],
+        ignore_index=True,
+    )
+
+    result = percent_major_by_decade(df)
+
+    assert result.loc[1990] == 1.0
+    assert result.loc[1950] == 0.0
+    assert result.loc[1980] == 0.5
