@@ -1,0 +1,4 @@
+.env
+charts/
+data/spotify_ds.csv
+__pycache__*
